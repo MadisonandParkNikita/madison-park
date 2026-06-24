@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gallery · Madison and Park</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..600;1,6..96,400..600&family=EB+Garamond:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root{ --cream:#f6f1e7; --cream-warm:#e7ded0; --navy:#16293f; --navy-mid:#1c3651; --ink:#1c2f44; --ink-soft:#21384f; --ink-body:#3c4d5e; --blue:#2f5d8e; --blue-light:#9db8d4; --paper:#f3ede1; --paper-bright:#fbf6ec; --grey-hover:#8a8f95; --display:'Didot','Bodoni Moda',Georgia,serif; --body:'EB Garamond',Georgia,serif; --radius:16px; --radius-lg:20px; --radius-sm:6px; --ease:cubic-bezier(.2,.7,.2,1); }
+*{ margin:0; padding:0; box-sizing:border-box; }
+html{ scroll-behavior:smooth; }
+body{ font-family:var(--body); color:#283643; background:var(--cream); -webkit-font-smoothing:antialiased; }
+h1,h2,h3{ text-wrap:balance; } p{ text-wrap:pretty; }
+a:focus-visible, button:focus-visible{ outline:2px solid var(--blue); outline-offset:3px; }
+.eyebrow{ font-family:var(--display); letter-spacing:.34em; color:var(--blue); }
+#site-nav{ position:fixed; top:0; left:0; right:0; z-index:50; display:flex; align-items:center; justify-content:space-between; padding:26px var(--pad-x,46px); color:#21384f; background:transparent; transition:background .5s ease, padding .45s ease, box-shadow .5s ease, color .5s ease; }
+#site-nav.scrolled{ background:rgba(246,241,231,.92); backdrop-filter:blur(8px); padding:17px var(--pad-x,46px); box-shadow:0 1px 0 rgba(28,47,68,.08); color:#21384f; }
+.nav-left{ display:flex; align-items:center; gap:22px; flex:1; }
+#nav-burger{ display:flex; flex-direction:column; gap:5px; background:none; border:none; cursor:pointer; padding:4px 0; color:inherit; }
+#nav-burger span{ display:block; width:26px; height:1px; background:currentColor; }
+.nav-brand{ font-family:var(--display); font-weight:500; font-size:18px; letter-spacing:.26em; text-indent:.26em; color:inherit; text-decoration:none; white-space:nowrap; }
+.nav-links{ display:flex; align-items:center; justify-content:flex-end; gap:30px; flex:1; font-family:var(--display); font-size:16px; letter-spacing:.06em; }
+.nav-links a{ display:inline-block; color:inherit; text-decoration:none; transition:color .25s ease, transform .25s ease; }
+.nav-links a:hover{ color:var(--grey-hover); transform:translateY(4px); }
+.nav-links a.is-current{ color:var(--blue); }
+#menu-overlay{ position:fixed; inset:0; background:rgba(20,30,45,.18); z-index:70; opacity:0; pointer-events:none; transition:opacity .4s ease; }
+#menu-overlay.show{ opacity:1; pointer-events:auto; }
+#menu-drawer{ position:fixed; top:0; left:0; height:100vh; height:100dvh; width:min(44vw,440px); background:var(--cream); z-index:80; transform:translateX(-100%); transition:transform .55s var(--ease), box-shadow .55s ease; display:flex; flex-direction:column; padding:26px 36px 36px; overflow-y:auto; }
+#menu-drawer.open{ transform:none; box-shadow:18px 0 60px rgba(20,30,45,.28); }
+.menu-close{ align-self:flex-end; background:none; border:none; font-size:30px; line-height:1; cursor:pointer; color:var(--ink); margin-bottom:18px; }
+.menu-wordmark{ font-family:var(--display); font-weight:500; font-size:14px; letter-spacing:.26em; text-indent:.26em; color:var(--ink-soft); text-decoration:none; padding-bottom:22px; margin-bottom:10px; border-bottom:1px solid rgba(28,47,68,.14); }
+.menu-list{ display:flex; flex-direction:column; }
+.menu-link{ display:block; text-decoration:none; padding:15px 0; border-bottom:1px solid rgba(28,47,68,.08); transition:transform .3s var(--ease); }
+.menu-link:hover{ transform:translateX(8px); }
+.menu-link-title{ display:block; font-family:var(--display); font-size:30px; line-height:1.05; color:var(--ink); transition:color .25s ease; }
+.menu-link:hover .menu-link-title{ color:var(--grey-hover); }
+.menu-link-desc{ display:block; margin-top:5px; font-family:var(--body); font-size:14px; letter-spacing:.02em; color:var(--ink-body); opacity:.78; }
+.menu-foot{ margin-top:auto; padding-top:24px; display:flex; flex-direction:column; gap:8px; font-family:var(--display); font-size:13px; letter-spacing:.08em; }
+.menu-foot a{ color:var(--ink-soft); text-decoration:none; transition:color .25s ease; }
+.menu-foot a:hover{ color:var(--grey-hover); }
+.menu-restaurants{ padding-top:22px; margin-top:4px; border-top:1px solid rgba(28,47,68,.08); }
+.menu-section{ font-family:var(--display); font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:var(--ink-body); opacity:.6; margin-bottom:9px; }
+.menu-sublink{ display:block; font-family:var(--display); font-size:18px; color:var(--ink-soft); text-decoration:none; padding:7px 0; transition:color .25s ease, transform .3s var(--ease); }
+.menu-sublink:hover{ color:var(--grey-hover); transform:translateX(6px); }
+
+#site-nav.on-dark:not(.scrolled){ color:#f6f1e7; }
+#site-nav.on-dark:not(.scrolled) .nav-links a:hover{ color:#cfe0f1; }
+#site-nav.on-dark:not(.scrolled) .nav-links a.is-current{ color:var(--blue-light); }
+@media (max-width:860px){ .nav-links{ display:none; } #menu-drawer{ width:82vw; } }
+
+
+.site-footer{ background:var(--navy); color:var(--paper); padding:0 46px 40px; }
+.footer-grid{ max-width:1180px; margin:0 auto; display:grid; grid-template-columns:1.6fr 1fr 1fr 1fr; gap:40px; align-items:start; padding-top:46px; border-top:1px solid rgba(243,237,225,.16); }
+.footer-brand{ font-family:var(--display); font-size:18px; letter-spacing:.36em; color:var(--paper-bright); }
+.footer-blurb{ margin-top:16px; font-size:15px; line-height:1.8; max-width:260px; color:rgba(243,237,225,.72); }
+.footer-col{ font-size:15px; line-height:1.95; color:rgba(243,237,225,.78); }
+.footer-col h4{ color:var(--blue-light); font-family:var(--display); font-weight:400; letter-spacing:.16em; font-size:13px; margin-bottom:12px; }
+.footer-col a{ color:inherit; text-decoration:none; border-bottom:1px solid rgba(243,237,225,.2); }
+.footer-meta{ max-width:1180px; margin:30px auto 0; display:flex; justify-content:space-between; font-size:12px; letter-spacing:.14em; color:rgba(243,237,225,.45); }
+[data-reveal]{ opacity:0; transform:translateY(34px); transition:opacity 1.05s var(--ease), transform 1.05s var(--ease); }
+[data-reveal].in{ opacity:1; transform:none; }
+@media (prefers-reduced-motion:reduce){ html{ scroll-behavior:auto; } [data-reveal]{ transition:none; opacity:1; transform:none; } }
+@media (max-width:860px){ #site-nav{ padding:20px 22px; } #site-nav.scrolled{ padding:14px 22px; } .nav-links{ gap:15px; font-size:14px; } .nav-links{ display:none; } #menu-drawer{ width:82vw; } .footer-grid{ grid-template-columns:1fr 1fr; } .footer-meta{ flex-direction:column; gap:8px; } }
+
+.lb{ position:fixed; inset:0; background:rgba(8,12,18,.93); display:none; align-items:center; justify-content:center; z-index:130; }
+.lb.open{ display:flex; }
+.lb img{ max-width:86vw; max-height:82vh; border-radius:10px; box-shadow:0 50px 130px rgba(0,0,0,.6); }
+.lb-close{ position:absolute; top:22px; right:30px; background:none; border:none; color:#f6f1e7; font-size:34px; line-height:1; cursor:pointer; opacity:.8; }
+.lb-close:hover{ opacity:1; }
+.lb-nav{ position:absolute; top:50%; transform:translateY(-50%); background:none; border:none; color:#f6f1e7; font-size:54px; line-height:1; cursor:pointer; opacity:.55; padding:10px 20px; transition:opacity .2s; }
+.lb-nav:hover{ opacity:1; } .lb-prev{ left:14px; } .lb-next{ right:14px; }
+.lb-cap{ position:absolute; bottom:26px; left:0; right:0; text-align:center; color:rgba(246,241,231,.8); font-family:var(--display); letter-spacing:.18em; font-size:13px; text-transform:uppercase; }
+
+.gi{ position:relative; height:100vh; min-height:600px; overflow:hidden; background:#0c1521; cursor:grab; touch-action:none; }
+.gi.dragging{ cursor:grabbing; }
+.gi-stage{ position:absolute; inset:0; }
+.gi-tile{ position:absolute; top:0; left:0; will-change:transform; border-radius:9px; background-size:cover; background-position:center; box-shadow:0 16px 38px -20px rgba(0,0,0,.55); }
+.gi-tile::after{ content:""; position:absolute; inset:0; border-radius:9px; box-shadow:inset 0 0 0 1px rgba(255,255,255,.06); }
+.gi-vignette{ position:absolute; inset:0; pointer-events:none; z-index:1; background:radial-gradient(125% 125% at 50% 45%, rgba(12,21,33,0) 48%, rgba(8,13,20,.72) 100%); }
+/* readability scrim: always-on dark band behind the title + hint, independent of the photos */
+.gi-veil{ position:absolute; inset:0; pointer-events:none; z-index:2; background:linear-gradient(180deg, rgba(8,13,20,.74) 0%, rgba(8,13,20,.40) 15%, rgba(8,13,20,0) 33%, rgba(8,13,20,0) 66%, rgba(8,13,20,.52) 100%); }
+.gi-top{ position:absolute; top:clamp(104px,15vh,140px); left:0; right:0; text-align:center; pointer-events:none; z-index:3; padding:0 22px; }
+.gi-top .eyebrow{ font-size:13px; color:var(--blue-light); text-shadow:0 1px 16px rgba(0,0,0,.55); }
+.gi-top h1{ margin-top:14px; font-family:var(--display); font-weight:400; font-size:clamp(40px,7vw,92px); line-height:.95; color:#f6f1e7; text-shadow:0 2px 30px rgba(0,0,0,.72), 0 2px 8px rgba(0,0,0,.6), 0 0 2px rgba(0,0,0,.5); }
+.gi-hint{ position:absolute; bottom:26px; left:0; right:0; text-align:center; color:rgba(246,241,231,.66); font-family:var(--display); letter-spacing:.26em; font-size:11px; text-transform:uppercase; pointer-events:none; z-index:3; text-shadow:0 1px 12px rgba(0,0,0,.6); }
+
+/* side focus: blur + darken left/right edges so the centred tiles lead the eye */
+.gi-blur{ position:absolute; top:0; bottom:0; width:24%; pointer-events:none; z-index:1; backdrop-filter:blur(7px); -webkit-backdrop-filter:blur(7px); }
+.gi-blur-l{ left:0; -webkit-mask:linear-gradient(90deg,#000 0%,#000 26%,transparent 100%); mask:linear-gradient(90deg,#000 0%,#000 26%,transparent 100%); }
+.gi-blur-r{ right:0; -webkit-mask:linear-gradient(270deg,#000 0%,#000 26%,transparent 100%); mask:linear-gradient(270deg,#000 0%,#000 26%,transparent 100%); }
+.gi-sides{ position:absolute; inset:0; pointer-events:none; z-index:1; background:linear-gradient(90deg, rgba(8,13,20,.80) 0%, rgba(8,13,20,.34) 9%, rgba(8,13,20,0) 22%, rgba(8,13,20,0) 78%, rgba(8,13,20,.34) 91%, rgba(8,13,20,.80) 100%); }
+#lbPanel{ width:min(86vw,1080px); height:82vh; border-radius:10px; box-shadow:0 50px 130px rgba(0,0,0,.6), inset 0 0 0 1px rgba(255,255,255,.08); }
+@media (max-width:860px){ .gi-blur{ width:15%; backdrop-filter:blur(5px); -webkit-backdrop-filter:blur(5px); } .gi-sides{ background:linear-gradient(90deg, rgba(8,13,20,.7) 0%, rgba(8,13,20,0) 20%, rgba(8,13,20,0) 80%, rgba(8,13,20,.7) 100%); } }
+</style></head><body>
+<div id="menu-overlay"></div>
+<aside id="menu-drawer" aria-label="Menu">
+  <button class="menu-close" id="menu-close" aria-label="Close menu">&times;</button>
+  <a href="index.html" class="menu-wordmark">MADISON AND PARK</a>
+  <nav class="menu-list" aria-label="Pages">
+    <a class="menu-link" href="about.html"><span class="menu-link-title">About</span><span class="menu-link-desc">Our story &amp; the people behind the table</span></a>
+    <a class="menu-link" href="events.html"><span class="menu-link-title">Events</span><span class="menu-link-desc">Private dining, parties &amp; celebrations</span></a>
+    <a class="menu-link" href="gallery.html"><span class="menu-link-title">Gallery</span><span class="menu-link-desc">A look inside our rooms &amp; dishes</span></a>
+    <a class="menu-link" href="press.html"><span class="menu-link-title">Press</span><span class="menu-link-desc">Selected coverage &amp; acclaim</span></a>
+    <a class="menu-link" href="index.html#reserve"><span class="menu-link-title">Contact</span><span class="menu-link-desc">Reservations &amp; enquiries</span></a>
+  </nav>
+  <div class="menu-restaurants">
+    <div class="menu-section">Restaurants</div>
+    <a class="menu-sublink" href="index.html#restaurants">Greenwich &amp; Delancey</a>
+    <a class="menu-sublink" href="index.html#restaurants">Lox &middot; The Museums</a>
+    <a class="menu-sublink" href="index.html#restaurants">2nd Ave Speakeasy</a>
+  </div>
+  <div class="menu-foot">
+    <a href="https://www.instagram.com/madisonandparkevents/" target="_blank" rel="noopener">@madisonandparkevents</a>
+    <a href="mailto:jenn@madisonandparkgroup.com">jenn@madisonandparkgroup.com</a>
+  </div>
+</aside>
+<nav id="site-nav" class="on-dark">
+  <div class="nav-left"><button id="nav-burger" aria-label="Open menu"><span></span><span></span></button></div>
+  <a href="index.html" class="nav-brand">MADISON AND PARK</a>
+  <div class="nav-links">
+    <a href="about.html">About</a>
+    <a href="events.html">Events</a>
+    <a href="gallery.html" class="is-current">Gallery</a>
+    <a href="press.html">Press</a>
+    <a href="index.html#reserve">Contact</a>
+  </div>
+</nav>
+<main>
+  <section class="gi" id="giSec">
+    <div class="gi-stage" id="giStage"></div>
+    <div class="gi-blur gi-blur-l"></div>
+    <div class="gi-blur gi-blur-r"></div>
+    <div class="gi-sides"></div>
+    <div class="gi-vignette"></div>
+    <div class="gi-veil"></div>
+    <div class="gi-top"><span class="eyebrow">THE GALLERY</span><h1>An endless table</h1></div>
+    <div class="gi-hint">Drag &middot; scroll any direction &middot; click to enlarge</div>
+  </section>
+</main>
+<div class="lb" id="lb" aria-hidden="true">
+  <button class="lb-nav lb-prev" aria-label="Previous">&#8249;</button>
+  <div id="lbPanel" role="img" aria-label=""></div>
+  <button class="lb-nav lb-next" aria-label="Next">&#8250;</button>
+  <button class="lb-close" id="lbClose" aria-label="Close">&times;</button>
+  <div class="lb-cap" id="lbCap"></div>
+</div>
+<footer class="site-footer">
+  <div class="footer-grid">
+    <div><div class="footer-brand">MADISON AND PARK</div>
+      <div class="footer-blurb">Bespoke catering and restaurants for life&rsquo;s defining celebrations. Kosher Certified under the OU.</div></div>
+    <div class="footer-col"><h4>CATERING</h4>Weddings<br>Corporate<br>Mitzvahs</div>
+    <div class="footer-col"><h4>LOCATIONS</h4>Greenwich &amp; Delancey<br>Lox &middot; The Museums<br>2nd Ave Speakeasy</div>
+    <div class="footer-col"><h4>CONTACT</h4><a href="#">Instagram</a><br><a href="#">events@madisonandpark.com</a></div>
+  </div>
+  <div class="footer-meta"><span>&copy; MMXXV MADISON AND PARK</span><span>NEW YORK &middot; KOSHER CERTIFIED UNDER THE OU</span></div>
+</footer>
+<script>(function(){
+/* ---------- gradient placeholders stand in for photos ---------- */
+var GRADS = [
+ "linear-gradient(150deg,#16293f,#2f5d8e 70%,#9db8d4)",
+ "linear-gradient(120deg,#1c3651,#3c4d5e)",
+ "linear-gradient(165deg,#2f5d8e,#16293f)",
+ "linear-gradient(135deg,#9db8d4,#2f5d8e)",
+ "linear-gradient(150deg,#e7ded0,#9db8d4)",
+ "linear-gradient(110deg,#21384f,#2f5d8e)",
+ "linear-gradient(160deg,#3c4d5e,#1c3651)",
+ "linear-gradient(140deg,#2f5d8e,#9db8d4 60%,#e7ded0)",
+ "linear-gradient(130deg,#16293f,#1c3651)",
+ "linear-gradient(155deg,#9db8d4,#21384f)",
+ "linear-gradient(125deg,#1c3651,#2f5d8e)",
+ "linear-gradient(145deg,#e7ded0,#2f5d8e)",
+ "linear-gradient(135deg,#2f5d8e,#16293f 70%,#0c1521)"
+];
+var ALTS = ["Industrial loft wedding","Anniversary gala","Torched salmon canapes","Lox, five ways","Coupes at the bar","Cocktail service","The carving experience","Carving station","Chef David Teyf","Greenwich and Delancey","Lox at the Jewish Museum","Museum of Jewish Heritage","2nd Floor Bar and Essen"];
+window.GAL = GRADS.map(function(g,i){ return { grad:g, alt:ALTS[i]||'' }; });
+
+/* ---------- lightbox (shows the enlarged gradient + caption) ---------- */
+var LB=document.getElementById('lb'), LBP=document.getElementById('lbPanel'), LBC=document.getElementById('lbCap'), lbIdx=0;
+function lbShow(){ var o=window.GAL[lbIdx]; LBP.style.background=o.grad; LBP.setAttribute('aria-label',o.alt||''); LBC.textContent=o.alt||''; }
+window.openLb=function(i){ lbIdx=i; lbShow(); LB.classList.add('open'); LB.setAttribute('aria-hidden','false'); };
+function lbClose(){ LB.classList.remove('open'); LB.setAttribute('aria-hidden','true'); }
+function lbNav(d){ lbIdx=(lbIdx+d+window.GAL.length)%window.GAL.length; lbShow(); }
+document.getElementById('lbClose').addEventListener('click',lbClose);
+LB.addEventListener('click',function(e){ if(e.target===LB) lbClose(); });
+LB.querySelector('.lb-prev').addEventListener('click',function(){lbNav(-1);});
+LB.querySelector('.lb-next').addEventListener('click',function(){lbNav(1);});
+document.addEventListener('keydown',function(e){ if(!LB.classList.contains('open'))return; if(e.key==='Escape')lbClose(); if(e.key==='ArrowLeft')lbNav(-1); if(e.key==='ArrowRight')lbNav(1); });
+
+/* ---------- nav + drawer ---------- */
+var nav=document.getElementById('site-nav');
+function onScroll(){ if(window.scrollY>40) nav.classList.add('scrolled'); else nav.classList.remove('scrolled'); }
+window.addEventListener('scroll', onScroll, {passive:true}); onScroll();
+var burger=document.getElementById('nav-burger'), drawer=document.getElementById('menu-drawer'), overlay=document.getElementById('menu-overlay');
+function oD(){ drawer.classList.add('open'); overlay.classList.add('show'); }
+function cD(){ drawer.classList.remove('open'); overlay.classList.remove('show'); }
+burger.addEventListener('click', oD); overlay.addEventListener('click', cD);
+document.getElementById('menu-close').addEventListener('click', cD);
+document.addEventListener('keydown', function(e){ if(e.key==='Escape') cD(); });
+
+/* ---------- infinite gallery ---------- */
+var sec=document.getElementById('giSec'), stage=document.getElementById('giStage');
+var N=window.GAL.length, CW=300, CH=250, GAP=16, TW=CW-GAP, TH=CH-GAP;
+var offX=-CW*1.5, offY=-CH*0.5, T=[], dirty=true;
+function mod(n,m){ return ((n%m)+m)%m; }
+/* well-mixed integer hash: decorrelates neighbours so there are no diagonal streaks */
+function hash2(c,r){ var h=Math.imul(c|0,374761393)+Math.imul(r|0,668265263); h=Math.imul(h^(h>>>13),1274126177); h=(h^(h>>>16))>>>0; return h%N; }
+function imgIndex(c,r){ var v=hash2(c,r); if(v===hash2(c-1,r)) v=mod(v+1,N); if(v===hash2(c,r-1)) v=mod(v+1,N); return v; }
+
+function build(){
+  stage.innerHTML=''; T=[];
+  var cols=Math.ceil(sec.clientWidth/CW)+2, rows=Math.ceil(sec.clientHeight/CH)+3;
+  for(var j=0;j<rows;j++){ for(var i=0;i<cols;i++){
+    var el=document.createElement('div'); el.className='gi-tile';
+    el.style.width=TW+'px'; el.style.height=TH+'px';
+    stage.appendChild(el);
+    T.push({ el:el, i:i, j:j, idx:-1 });
+  }}
+  dirty=true;
+}
+function render(){
+  var sc=Math.floor(-offX/CW)-1, sr=Math.floor(-offY/CH)-1;
+  for(var k=0;k<T.length;k++){
+    var t=T[k], wc=sc+t.i, wr=sr+t.j;
+    var stag=(mod(wc,2)===1)?CH/2:0;
+    var x=wc*CW+offX, y=wr*CH+offY+stag;
+    t.el.style.transform='translate3d('+x+'px,'+y+'px,0)';
+    var idx=imgIndex(wc,wr);
+    if(t.idx!==idx){ t.el.style.background=window.GAL[idx].grad; t.idx=idx; t.el.dataset.full=idx; }
+  }
+}
+
+/* ---------- smooth control: damped drag, eased momentum, gentle wheel ---------- */
+var drag=false,lx=0,ly=0,vx=0,vy=0,moved=0,downTile=null;
+var FRICTION=0.91, MAXV=24, GAIN=0.55;
+function clampV(){ if(vx>MAXV)vx=MAXV; else if(vx<-MAXV)vx=-MAXV; if(vy>MAXV)vy=MAXV; else if(vy<-MAXV)vy=-MAXV; }
+function pt(e){ return (e.touches&&e.touches[0])?{x:e.touches[0].clientX,y:e.touches[0].clientY}:{x:e.clientX,y:e.clientY}; }
+function down(e){ drag=true; sec.classList.add('dragging'); var p=pt(e); lx=p.x; ly=p.y; vx=vy=moved=0; downTile=(e.target.closest?e.target.closest('.gi-tile'):null); }
+function move(e){ if(!drag)return; var p=pt(e); var rdx=p.x-lx, rdy=p.y-ly; var dx=rdx*GAIN, dy=rdy*GAIN; offX+=dx; offY+=dy; vx=vx*0.6+dx*0.4; vy=vy*0.6+dy*0.4; lx=p.x; ly=p.y; moved+=Math.abs(rdx)+Math.abs(rdy); dirty=true; }
+function up(){ if(!drag)return; drag=false; sec.classList.remove('dragging'); clampV(); if(moved<6&&downTile){ openLb(+downTile.dataset.full); vx=vy=0; } }
+sec.addEventListener('mousedown',down); window.addEventListener('mousemove',move); window.addEventListener('mouseup',up);
+sec.addEventListener('touchstart',down,{passive:true});
+sec.addEventListener('touchmove',function(e){ if(drag)e.preventDefault(); move(e); },{passive:false});
+window.addEventListener('touchend',up);
+sec.addEventListener('wheel',function(e){ e.preventDefault(); var u=(e.deltaMode===1)?16:1; vx+=-e.deltaX*u*0.2; vy+=-e.deltaY*u*0.2; clampV(); },{passive:false});
+
+function frame(){
+  if(drag){ if(dirty){ render(); dirty=false; } }
+  else if(Math.abs(vx)>0.06||Math.abs(vy)>0.06){ offX+=vx; offY+=vy; vx*=FRICTION; vy*=FRICTION; render(); }
+  else if(dirty){ render(); dirty=false; }
+  requestAnimationFrame(frame);
+}
+var rt; window.addEventListener('resize',function(){ clearTimeout(rt); rt=setTimeout(function(){ build(); render(); },120); });
+build(); render(); requestAnimationFrame(frame);
+})();</script>
+</body></html>
